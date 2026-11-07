@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMART VIDHYA USS MODEL EXAM 6</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@400;500;600;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  :root{
+    --navy:#0b3c68; --navy-2:#134f86; --ink:#16202c; --muted:#5b6778;
+    --paper:#ffffff; --bg:#eef2f6; --line:#cfd8e3; --omr:#c2415b; --omr-soft:#fbe9ed;
+    --ok:#15803d; --ok-soft:#e7f6ec; --bad:#b91c1c; --bad-soft:#fdecec;
+    --a:#0f766e; --a-soft:#e6f4f2; --b:#0b3c68; --b-soft:#e8f0f8; --c:#b45309; --c-soft:#fdf2e3;
+    --r:12px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-padding-top:140px}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Anek Malayalam','Noto Sans',system-ui,sans-serif;font-size:17px;line-height:1.55;-webkit-tap-highlight-color:transparent}
+  .font-arabic{font-family:'Amiri',serif;font-size:1.2em}
+  button{font:inherit;cursor:pointer}
+  button:focus-visible,input:focus-visible,.opt:focus-visible{outline:3px solid #f5b301;outline-offset:2px}
+  .wrap{max-width:780px;margin:0 auto;padding:16px 14px 60px}
+
+  /* Masthead */
+  .mast{background:var(--navy);color:#fff}
+  .mast .wrap{padding:18px 14px 16px}
+  .mast h1{margin:0;font-size:clamp(1.25rem,4.6vw,1.8rem);font-weight:800;letter-spacing:.02em;line-height:1.2}
+  .mast p{margin:4px 0 0;color:#c9d9ea;font-size:.95rem}
+  .mast-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+  .btn-ghost{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.55);padding:8px 14px;border-radius:999px;font-weight:700;font-size:.9rem}
+  .btn-ghost:hover{background:rgba(255,255,255,.12)}
+  .steps{display:flex;gap:6px;margin-top:14px}
+  .steps span{flex:1;font-size:.82rem;font-weight:700;color:#9fb8d3;border-top:4px solid rgba(255,255,255,.2);padding-top:6px}
+  .steps span.on{color:#fff;border-color:#f5b301}
+  .steps span.done{color:#d7e5f3;border-color:#7fb3e0}
+
+  .screen{display:none}
+  .screen.show{display:block}
+
+  /* OMR sheet (registration) */
+  .sheet{background:var(--paper);border:2px solid var(--omr);border-radius:6px;padding:18px;position:relative;margin-top:18px}
+  .sheet::before{content:"";position:absolute;inset:5px;border:1px solid var(--omr);border-radius:3px;pointer-events:none;opacity:.5}
+  .sheet-title{text-align:center;color:var(--omr);font-weight:800;font-size:1.05rem;border-bottom:2px solid var(--omr);padding-bottom:10px;margin:0 0 16px}
+  .field{border:1.5px solid var(--omr);border-radius:4px;padding:12px;margin-bottom:14px;background:#fff}
+  .field > label,.field .lbl{display:block;color:var(--omr);font-weight:800;font-size:.9rem;margin-bottom:8px}
+  .field .hint{font-size:.8rem;color:var(--muted);margin-top:6px}
+  .field input[type=text]{width:100%;padding:11px 12px;border:1.5px solid #9aa7b6;border-radius:6px;font-size:1.05rem;font-weight:700;letter-spacing:.06em;color:var(--ink)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:640px){.grid2{grid-template-columns:1fr}}
+  .roll-matrix{display:flex;justify-content:space-between;gap:4px;margin-top:10px;max-width:300px}
+  .roll-col{display:flex;flex-direction:column;align-items:center;gap:3px}
+  .rb{width:24px;height:24px;border:1.3px solid var(--omr);border-radius:50%;font-size:.7rem;font-weight:700;display:grid;place-items:center;color:var(--omr);transition:background .15s}
+  .rb.filled{background:#111;border-color:#111;color:#fff}
+  .roll-box{width:24px;height:26px;border:1.3px solid var(--omr);display:grid;place-items:center;font-weight:800;font-size:.9rem;margin-bottom:4px}
+
+  .choice-row{display:flex;flex-wrap:wrap;gap:10px}
+  .chip{display:flex;align-items:center;gap:10px;border:2px solid var(--line);background:#fff;border-radius:10px;padding:10px 14px;font-weight:700;color:var(--ink);min-height:48px;text-align:left}
+  .chip .dot{width:22px;height:22px;border:2px solid var(--omr);border-radius:50%;flex:none;display:grid;place-items:center}
+  .chip.on{border-color:var(--navy);background:var(--b-soft)}
+  .chip.on .dot{background:#111;border-color:#111;box-shadow:inset 0 0 0 3px #fff}
+  .med-row .chip{flex:1 1 200px}
+  .lang-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .lang-grid .chip{flex-direction:column;align-items:center;justify-content:center;padding:12px 8px;gap:4px;text-align:center}
+  .lang-grid .native{font-size:1.25rem;line-height:1.4;color:var(--navy)}
+  .lang-grid .ml{font-size:.9rem}
+  .field.muted{background:#f3f5f8;border-style:dashed}
+  .field.muted input{background:#e7ebf0;color:#8792a2}
+  .note-red{color:var(--bad);font-size:.8rem;font-weight:700;margin-top:4px}
+  #sigCanvas{width:100%;height:70px;border:1px dashed #8a95a5;border-radius:6px;background:#fafbfc;touch-action:none;display:block}
+  .link-btn{background:none;border:0;color:var(--muted);text-decoration:underline;font-size:.8rem;padding:4px 0}
+
+  .btn{border:0;border-radius:10px;padding:14px 20px;font-weight:800;font-size:1.05rem}
+  .btn-main{background:var(--navy);color:#fff;width:100%}
+  .btn-main:hover{background:var(--navy-2)}
+  .btn-go{background:var(--ok);color:#fff;width:100%}
+  .btn-line{background:#fff;color:var(--navy);border:2px solid var(--navy)}
+
+  /* Sticky exam bar */
+  .exambar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgba(11,60,104,.08)}
+  .exambar .wrap{padding:10px 14px}
+  .exambar-row{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:.9rem}
+  .who{flex:1;min-width:0;font-weight:800;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .who small{display:block;font-weight:600;color:var(--muted);font-size:.78rem}
+  .count{flex:none;font-weight:800;color:var(--ink);white-space:nowrap;text-align:right;line-height:1.2}
+  .count small{display:block;font-size:.72rem;color:var(--muted);font-weight:600}
+  .count b{color:var(--ok);font-size:1.15rem}
+  .bar{height:8px;background:#e3e8ee;border-radius:99px;margin-top:8px;overflow:hidden;display:flex}
+  .bar i{display:block;height:100%;transition:width .25s}
+  .bar .ia{background:var(--a)} .bar .ib{background:var(--b)} .bar .ic{background:var(--c)}
+  .jump{display:flex;gap:6px;margin-top:8px;overflow-x:auto}
+  .jump button{flex:none;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:4px 12px;font-size:.8rem;font-weight:700;color:var(--muted)}
+
+  /* Subject headers */
+  .subj{margin-top:26px}
+  .subj-head{border-radius:var(--r);padding:14px 16px;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .subj-head h2{margin:0;font-size:1.15rem;line-height:1.3}
+  .subj-head p{margin:2px 0 0;font-size:.85rem;opacity:.9}
+  .subj-head .tally{background:rgba(255,255,255,.18);border-radius:8px;padding:6px 10px;font-weight:800;font-size:.9rem;white-space:nowrap}
+  .subj.A .subj-head{background:var(--a)} .subj.B .subj-head{background:var(--b)} .subj.C .subj-head{background:var(--c)}
+
+  /* Question card */
+  .q{background:#fff;border:1.5px solid var(--line);border-radius:var(--r);padding:14px;margin-top:12px}
+  .q.answered{border-color:#9dc3a9}
+  .q-top{display:flex;gap:12px;align-items:flex-start}
+  .qn{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:.95rem;color:#fff}
+  .A .qn{background:var(--a)} .B .qn{background:var(--b)} .C .qn{background:var(--c)}
+  .q-text{font-weight:700;font-size:1.02rem;flex:1;min-width:0;padding-top:4px;overflow-wrap:anywhere}
+  .q-text[dir=rtl]{text-align:right}
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+  @media (max-width:560px){.opts{grid-template-columns:1fr}}
+  .opt{display:flex;align-items:center;gap:12px;width:100%;border:2px solid var(--line);background:#fafbfd;border-radius:10px;padding:10px 12px;text-align:left;color:var(--ink);min-height:52px;transition:border-color .12s,background .12s}
+  .opt:hover{border-color:#9fb0c4}
+  .opt .bub{flex:none;width:32px;height:32px;border-radius:50%;border:2px solid var(--omr);color:var(--omr);display:grid;place-items:center;font-weight:800;font-size:.95rem;font-family:'Anek Malayalam',sans-serif;transition:background .15s,transform .15s}
+  .opt .ot{flex:1;min-width:0;overflow-wrap:anywhere;font-weight:600}
+  .opt[dir=rtl]{text-align:right}
+  .opt.picked{border-color:#111;background:#fff}
+  .opt.picked .bub{background:#111;border-color:#111;color:#fff;transform:scale(1.06)}
+
+  /* Answer status panel */
+  .status{background:#fff;border:1.5px solid var(--line);border-radius:var(--r);padding:16px;margin-top:28px}
+  .status h3{margin:0 0 4px;font-size:1.05rem;color:var(--navy)}
+  .status p{margin:0 0 12px;color:var(--muted);font-size:.9rem}
+  .dots{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
+  .dots button{aspect-ratio:1;border-radius:8px;border:1.5px solid var(--line);background:#fff;font-weight:800;font-size:.8rem;color:var(--muted);padding:0}
+  .dots button.done{background:var(--ok-soft);border-color:#86c79c;color:var(--ok)}
+  .legend{display:flex;gap:14px;font-size:.8rem;color:var(--muted);margin-top:10px}
+  .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:4px;border:1.5px solid var(--line)}
+  .legend i.g{background:var(--ok-soft);border-color:#86c79c}
+
+  /* Result */
+  .card{background:#fff;border:1.5px solid var(--line);border-radius:var(--r);padding:18px;margin-top:18px}
+  .card h2{margin:0 0 6px;color:var(--navy);font-size:1.2rem}
+  .card p.lead{margin:0 0 14px;color:var(--muted);font-size:.92rem}
+  .roll-input{width:100%;padding:14px;border:2px solid var(--navy);border-radius:10px;font-size:1.5rem;font-weight:800;letter-spacing:.35em;text-align:center}
+  .res-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;border-bottom:2px solid var(--navy);padding-bottom:12px;margin-bottom:14px}
+  .res-head h3{margin:0;color:var(--navy);font-size:1.1rem}
+  .res-head .meta{font-size:.9rem;color:var(--muted);margin-top:4px}
+  .res-head .meta b{color:var(--ink)}
+  .total{flex:none;text-align:center;background:var(--navy);color:#fff;border-radius:12px;padding:10px 16px;min-width:108px}
+  .total .big{font-size:2.1rem;font-weight:800;line-height:1}
+  .total .of{font-size:.85rem;opacity:.85}
+  .subj-row{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:12px 0;border-bottom:1px solid #e6ebf1}
+  .subj-row .nm{font-weight:700}
+  .subj-row .nm small{display:block;color:var(--muted);font-weight:600;font-size:.8rem}
+  .subj-row .sc{font-weight:800;font-size:1.2rem;text-align:right}
+  .subj-row .meter{grid-column:1/-1;height:10px;background:#e8edf3;border-radius:99px;overflow:hidden}
+  .subj-row .meter i{display:block;height:100%}
+  .grade{margin-top:14px;padding:12px 14px;border-radius:10px;font-weight:700}
+  details{margin-top:16px;border:1.5px solid var(--line);border-radius:10px;padding:0 12px}
+  summary{cursor:pointer;font-weight:800;color:var(--navy);padding:12px 0}
+  table{width:100%;border-collapse:collapse;font-size:.88rem;margin-bottom:12px}
+  th,td{border:1px solid #d9e0e8;padding:6px;text-align:center}
+  th{background:var(--navy);color:#fff}
+  tr.ok td{background:var(--ok-soft)} tr.bad td{background:var(--bad-soft)} tr.na td{background:#f5f6f8;color:var(--muted)}
+  .tbl-wrap{overflow-x:auto}
+  .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+  .btn-row .btn{flex:1 1 200px}
+  .err{background:var(--bad-soft);color:var(--bad);border:1.5px solid #f3b4b4;border-radius:10px;padding:12px;font-weight:700;margin-top:14px}
+  .done-banner{background:var(--ok-soft);border:1.5px solid #86c79c;color:var(--ok);border-radius:var(--r);padding:16px;font-weight:700;margin-top:18px}
+  .done-banner b{display:block;font-size:1.1rem;margin-bottom:2px}
+
+  /* Answer review */
+  .rv-wrap{margin-top:22px;border-top:2px solid var(--navy);padding-top:16px}
+  .rv-title{margin:0 0 4px;color:var(--navy);font-size:1.15rem}
+  .rv-wrap .lead{margin:0 0 12px;color:var(--muted);font-size:.9rem}
+  .rv-filter{display:flex;gap:8px;flex-wrap:wrap}
+  .rv-filter button{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font-weight:700;font-size:.85rem;color:var(--muted)}
+  .rv-filter button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+  .rv-sec{margin-top:18px}
+  .rv{break-inside:avoid;page-break-inside:avoid}
+  .rv.rv-ok{border-color:#86c79c} .rv.rv-bad{border-color:#f0a3a3}
+  .r-opt{cursor:default}
+  .r-opt:hover{border-color:var(--line)}
+  .r-opt.r-key{border-color:var(--ok);background:var(--ok-soft)}
+  .r-opt.r-key .bub{background:var(--ok);border-color:var(--ok);color:#fff}
+  .r-opt.r-wrong{border-color:var(--bad);background:var(--bad-soft)}
+  .r-opt.r-wrong .bub{background:var(--bad);border-color:var(--bad);color:#fff}
+  .r-tag{display:block;font-size:.75rem;font-weight:800;margin-top:2px;font-family:'Anek Malayalam',sans-serif}
+  .r-key .r-tag{color:var(--ok)} .r-wrong .r-tag{color:var(--bad)}
+  .rv-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .rv-badge{font-weight:800;font-size:.85rem;padding:4px 10px;border-radius:8px}
+  .rv-badge.ok{background:var(--ok-soft);color:var(--ok)} .rv-badge.bad{background:var(--bad-soft);color:var(--bad)} .rv-badge.na{background:#eef1f4;color:var(--muted)}
+  .rv-key{font-size:.9rem;color:var(--ink)}
+
+  /* Fractions, statements, passages */
+  .frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 2px;line-height:1.05;font-weight:700}
+  .frac-n{border-bottom:1.5px solid currentColor;padding:0 2px;font-size:.85em}
+  .frac-d{padding:0 2px;font-size:.85em}
+  .stl{display:block;margin-top:6px;font-weight:500}
+  .stl>span{display:block}
+  .qpoem{display:block;margin-top:8px;border-left:4px solid #e0a23a;background:#fffaf0;padding:6px 12px;font-weight:600;line-height:1.7;border-radius:0 6px 6px 0}
+  .qpoem>span{display:block}
+  .passage{background:#fffaf0;border:1.5px solid #f0c987;border-radius:var(--r);padding:14px 16px;margin-top:12px}
+  .passage-h{font-weight:800;color:#8a4b08;font-size:.95rem;border-bottom:1px solid #f0d8b0;padding-bottom:8px;margin-bottom:10px}
+  .poem{border-left:4px solid #e0a23a;padding-left:14px;font-weight:600;line-height:1.7}
+  .poem p{margin:0}
+  .poet{text-align:right;font-weight:800;color:#8a4b08;margin-top:8px}
+
+  /* Modal */
+  .modal{position:fixed;inset:0;background:rgba(15,25,40,.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+  .modal.show{display:flex}
+  .modal-box{background:#fff;border-radius:14px;max-width:400px;width:100%;padding:22px;text-align:center;border-top:6px solid var(--navy)}
+  .modal-box h3{margin:0 0 8px;color:var(--navy);font-size:1.15rem}
+  .modal-box p{margin:0 0 18px;color:var(--muted);font-size:.95rem}
+  .modal-btns{display:flex;gap:10px}
+  .modal-btns .btn{flex:1;padding:12px}
+
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media print{
+    body{background:#fff}
+    .mast,.exambar,.no-print,#screenReg,#screenExam,.lookup{display:none!important}
+    #screenResult{display:block!important}
+    .card{border:0;padding:0}
+    details{border:0} details>*{display:block}
+  }
+</style>
+</head>
+<body>
+
+<header class="mast no-print">
+  <div class="wrap">
+    <div class="mast-row">
+      <div>
+        <h1>SMART VIDHYA USS MODEL EXAM 6</h1>
+        <p>പേപ്പർ 1 &nbsp;|&nbsp; 50 ചോദ്യങ്ങൾ &nbsp;|&nbsp; ഓൺലൈൻ OMR പരീക്ഷ</p>
+      </div>
+      <button class="btn-ghost" onclick="goResult()">റിസൾട്ട് നോക്കുക</button>
+    </div>
+    <div class="steps" id="stepBar">
+      <span data-s="1">1. രജിസ്ട്രേഷൻ</span>
+      <span data-s="2">2. പരീക്ഷ എഴുതുക</span>
+      <span data-s="3">3. റിസൾട്ട്</span>
+    </div>
+  </div>
+</header>
+
+<!-- ============ STEP 1: REGISTRATION ============ -->
+<main id="screenReg" class="screen">
+  <div class="wrap">
+    <div class="sheet">
+      <div class="sheet-title">OMR ANSWER SHEET (PAPER I) &nbsp;|&nbsp; രജിസ്ട്രേഷൻ</div>
+
+      <div class="grid2">
+        <div>
+          <div class="field">
+            <label for="studentName">Name of the Candidate (കുട്ടിയുടെ പേര്)</label>
+            <input type="text" id="studentName" placeholder="NAME IN CAPITAL LETTERS" autocomplete="off"
+              oninput="this.value=this.value.replace(/[^a-zA-Z\s]/g,'').toUpperCase()">
+          </div>
+
+          <div class="field">
+            <label for="studentRoll">Roll Number (ഫോൺ നമ്പറിന്റെ അവസാന 6 അക്കങ്ങൾ)</label>
+            <input type="text" id="studentRoll" maxlength="6" inputmode="numeric" placeholder="6 അക്ക റോൾ നമ്പർ" autocomplete="off"
+              oninput="this.value=this.value.replace(/\D/g,'');updateRollBubbles(this.value)">
+            <div class="roll-matrix" id="rollMatrix"></div>
+            <div class="hint">നമ്പർ ടൈപ്പ് ചെയ്യുമ്പോൾ OMR ബബിളുകൾ തനിയെ കറുപ്പിക്കപ്പെടും. റിസൾട്ട് നോക്കാൻ ഈ നമ്പർ ഓർത്തുവെക്കുക.</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="field">
+            <span class="lbl">Gender</span>
+            <div class="choice-row" data-group="gender">
+              <button type="button" class="chip" data-val="Male"><span class="dot"></span>Male (ആൺ)</button>
+              <button type="button" class="chip" data-val="Female"><span class="dot"></span>Female (പെൺ)</button>
+            </div>
+          </div>
+
+          <div class="field muted">
+            <span class="lbl">Question Booklet No &amp; Set</span>
+            <input type="text" value="DISABLED" disabled>
+            <div class="note-red">ഇത് സെലക്ട് ചെയ്യേണ്ടതില്ല</div>
+          </div>
+
+          <div class="field">
+            <span class="lbl">Signature of Candidate</span>
+            <canvas id="sigCanvas"></canvas>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <button type="button" class="link-btn" onclick="clearSig()">Clear</button>
+              <span class="note-red" style="margin:0">ഒപ്പ് ഇടേണ്ടതില്ല</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="lbl">Medium (മീഡിയം തിരഞ്ഞെടുക്കുക)</span>
+        <div class="choice-row med-row" data-group="med">
+          <button type="button" class="chip" data-val="Malayalam"><span class="dot"></span>മലയാളം മീഡിയം</button>
+          <button type="button" class="chip" data-val="English"><span class="dot"></span>ഇംഗ്ലീഷ് മീഡിയം (English Medium)</button>
+        </div>
+        <div class="hint">ഗണിത ചോദ്യങ്ങൾ ഈ മീഡിയത്തിലായിരിക്കും.</div>
+      </div>
+
+      <div class="field">
+        <span class="lbl">1st Language (ഒന്നാം ഭാഷ തിരഞ്ഞെടുക്കുക)</span>
+        <div class="lang-grid" data-group="lang" id="langGrid"></div>
+      </div>
+
+      <button class="btn btn-main" onclick="startExam()">പരീക്ഷ ആരംഭിക്കുക</button>
+    </div>
+  </div>
+</main>
+
+<!-- ============ STEP 2: EXAM ============ -->
+<div id="screenExam" class="screen">
+  <div class="exambar">
+    <div class="wrap">
+      <div class="exambar-row">
+        <div class="who" id="whoBox"></div>
+        <div class="count"><b id="ansCount">0</b> / 50<small>ഉത്തരം നൽകി</small></div>
+      </div>
+      <div class="bar" id="progBar"><i class="ia"></i><i class="ib"></i><i class="ic"></i></div>
+      <div class="jump" id="jumpRow"></div>
+    </div>
+  </div>
+  <main class="wrap" id="paper"></main>
+</div>
+
+<!-- ============ STEP 3: RESULT ============ -->
+<main id="screenResult" class="screen">
+  <div class="wrap">
+    <div id="doneBanner"></div>
+    <div class="card lookup">
+      <h2>റിസൾട്ട് പരിശോധിക്കുക (Check Result)</h2>
+      <p class="lead">രജിസ്ട്രേഷനിൽ നൽകിയ 6 അക്ക റോൾ നമ്പർ ടൈപ്പ് ചെയ്യുക.</p>
+      <input type="text" id="lookupRoll" class="roll-input" maxlength="6" inputmode="numeric" placeholder="------"
+        oninput="this.value=this.value.replace(/\D/g,'')" onkeydown="if(event.key==='Enter')checkResult()">
+      <div class="btn-row">
+        <button class="btn btn-main" onclick="checkResult()">റിസൾട്ട് കാണുക</button>
+      </div>
+      <div id="lookupErr"></div>
+    </div>
+    <div id="resultOut"></div>
+    <div class="btn-row no-print" style="margin-top:22px">
+      <button class="btn btn-line" onclick="newExam()">പുതിയ കുട്ടിക്ക് പരീക്ഷ എഴുതാൻ</button>
+    </div>
+  </div>
+</main>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <h3 id="mTitle"></h3>
+    <p id="mMsg"></p>
+    <div class="modal-btns" id="mBtns"></div>
+  </div>
+</div>
+
+<script>
+/* Fraction / statement / quoted-lines helpers */
+function F(n, d){ return '<span class="frac"><span class="frac-n">'+n+'</span><span class="frac-d">'+d+'</span></span>'; }
+function MF(w, n, d){ return '<span style="white-space:nowrap">'+w+F(n, d)+'</span>'; }
+function ST(lines){ return '<span class="stl">'+lines.map(function(l){ return '<span>'+l+'</span>'; }).join('')+'</span>'; }
+function QP(lines){ return '<span class="qpoem">'+lines.map(function(l){ return '<span>'+l+'</span>'; }).join('')+'</span>'; }
+
+/* Answer keys: Malayalam AT and Arabic have separate keys for Q1-15 */
+var MALAYALAM_AT_KEY = { 1:'B', 2:'C', 3:'B', 4:'A', 5:'B', 6:'A', 7:'A', 8:'C', 9:'C', 10:'A', 11:'C', 12:'B', 13:'A', 14:'A', 15:'B' };
+var ARABIC_KEY       = { 1:'B', 2:'C', 3:'D', 4:'D', 5:'B', 6:'C', 7:'B', 8:'D', 9:'A', 10:'B', 11:'B', 12:'C', 13:'A', 14:'B', 15:'A' };
+var MASTER_EVALUATION_KEY = {
+  "Malayalam AT": MALAYALAM_AT_KEY, "Arabic": ARABIC_KEY,
+  "Malayalam BT": { 16:'D', 17:'B', 18:'A', 19:'B', 20:'C', 21:'D', 22:'C', 23:'C', 24:'B', 25:'B', 26:'D', 27:'D', 28:'C', 29:'C', 30:'C' },
+  "Maths": { 31:'B', 32:'A', 33:'B', 34:'A', 35:'B', 36:'C', 37:'A', 38:'B', 39:'A', 40:'A', 41:'B', 42:'B', 43:'C', 44:'B', 45:'A', 46:'C', 47:'B', 48:'B', 49:'A', 50:'A' }
+};
+
+/* Reading passages */
+var PASSAGES = {
+  16: '<div class="passage"><div class="passage-h">കവിത വായിച്ച് 16 മുതൽ 20 വരെയുള്ള ചോദ്യങ്ങൾക്ക് ഉത്തരമെഴുതുക<br><small style="font-weight:600;color:#5b6778">(ചിന്താവിഷ്ടയായ സീത)</small></div>'+
+  '<div class="poem">'+
+  '<p>“പൊൻകുടമാഞ്ഞുവന്ന മേഘവിമാനത്തിൽ</p>'+
+  '<p>പൊൻവള്ളമായ് നിലാവിൻ തെളിയുന്നു.</p>'+
+  '<p>ദൂരെയൊരു കാറ്റിൻ ഓർമകളായ് വന്നു</p>'+
+  '<p>പൂമൊട്ടു തുറന്നു ചിരിക്കുന്നു നിലാവിൽ.</p>'+
+  '<p>ഹൃദയത്തിൽ വീണു താരകഗാനങ്ങൾ</p>'+
+  '<p>വിടരുന്നു വിരിഞ്ഞു കാറ്റിൻ ചിറകിൽ.</p>'+
+  '<p>ഭൂമിയിൽ എല്ലാം പുതുജീവിതം പോലെ</p>'+
+  '<p>ഒഴുകുന്നു കാലം കരുണാലയമായ്.”</p>'+
+  '</div></div>'
+};
+function passageFor(q, num){ return (q && q.pre) || PASSAGES[num] || ''; }
+
+var EXAM_QUESTION_BANK = {
+      "Malayalam_AT": [
+        { q: "1. ‘കാവ്യനർത്തകി’ എന്ന കവിതയുടെ രചയിതാവ് ആര്?", a: "കുമാരനാശാൻ", b: "ചങ്ങമ്പുഴ കൃഷ്ണപിള്ള", c: "വള്ളത്തോൾ നാരായണമേനോൻ", d: "ഉള്ളൂർ എസ്. പരമേശ്വരയ്യർ" },
+        { q: "2. കവിതയിൽ നർത്തകിയായി സങ്കൽപ്പിച്ചിരിക്കുന്നത് എന്തിനെയാണ്?", a: "പ്രകൃതിയെ", b: "സംഗീതത്തെ", c: "കവിതയെ", d: "ചിത്രകലയെ" },
+        { q: "3. ‘കാവ്യനർത്തകി’ എന്ന ശീർഷകം ഏറ്റവും അനുയോജ്യമാകുന്നത് എന്തുകൊണ്ട്?", a: "കവിതയിൽ ഒരു നർത്തകിയുടെ ജീവിതം പറയുന്നു.", b: "കവിതയെ നർത്തകിയായി സങ്കൽപ്പിക്കുന്നു.", c: "നൃത്തത്തിന്റെ ചരിത്രം വിവരിക്കുന്നു.", d: "നർത്തകിയുടെ വേഷം വിവരിക്കുന്നു." },
+        { q: "4. ‘കാവ്യനർത്തകി’ എന്ന ശീർഷകത്തിൽ അടങ്ങിയിരിക്കുന്ന ആശയതലം ഏത്?", a: "കവിതയും നൃത്തവും തമ്മിലുള്ള ബന്ധം", b: "കവിതയും കൃഷിയും തമ്മിലുള്ള ബന്ധം", c: "കവിതയും ശാസ്ത്രവും തമ്മിലുള്ള ബന്ധം", d: "കവിതയും രാഷ്ട്രീയവും തമ്മിലുള്ള ബന്ധം" },
+        { q: "5. കവിതയിൽ കവിയുടെ ഭാവന പ്രകടമാകുന്നത് പ്രധാനമായും എങ്ങനെയാണ്?", a: "സംഭവങ്ങൾ യഥാതഥമായി വിവരിക്കുന്നതിലൂടെ", b: "കവിതയ്ക്ക് നർത്തകിയുടെ രൂപവും ഭാവവും നൽകുന്നതിലൂടെ", c: "ചരിത്രസംഭവങ്ങൾ വിവരിക്കുന്നതിലൂടെ", d: "ശാസ്ത്രീയ വസ്തുതകൾ അവതരിപ്പിക്കുന്നതിലൂടെ" },
+        { q: "6. ‘കാവ്യനർത്തകി’ എന്ന കവിതയെക്കുറിച്ചുള്ള പ്രസ്താവനകൾ പരിശോധിക്കുക:" + ST(["1. കവിതയിൽ കാവ്യത്തെ നർത്തകിയായി സങ്കൽപ്പിച്ചിരിക്കുന്നു.", "2. കവിതയിൽ നൃത്തചലനങ്ങളും ചിലങ്കയുടെ ശബ്ദവും വർണിച്ചിരിക്കുന്നു.", "3. കവിത ഒരു ചരിത്രാഖ്യാനമാണ്.", "ശരിയായ പ്രസ്താവനകൾ ഏവ?"]), a: "1, 2 എന്നിവ മാത്രം", b: "1, 3 എന്നിവ മാത്രം", c: "2, 3 എന്നിവ മാത്രം", d: "1, 2, 3 എന്നിവ" },
+        { q: "7. ‘ലളിത’ എന്ന പദത്തിന്റെ അർഥം ഏത്?", a: "മനോഹരമായത്", b: "സങ്കീർണമായത്", c: "ഭയാനകമായത്", d: "പരുക്കനായത്" },
+        { q: "8. കവിതയിൽ ആവർത്തിക്കുന്ന നൃത്തസങ്കൽപ്പം ഏത് കലാരൂപവുമായി ബന്ധപ്പെട്ടിരിക്കുന്നു?", a: "ശില്പകല", b: "ചിത്രകല", c: "നൃത്തകല", d: "വാസ്തുവിദ്യ" },
+        { q: "9. ‘പുഞ്ചിരി’ എന്ന പദത്തിന്റെ വിപരീതപദം ഏത്?", a: "സന്തോഷം", b: "മന്ദഹാസം", c: "മ്ലാനത", d: "ചിരി" },
+        { q: "10. കവിതയിൽ പ്രകൃതിചിത്രങ്ങൾ ഉപയോഗിച്ചിരിക്കുന്നത് എന്തിനാണ്?", a: "നർത്തകിയുടെ സൗന്ദര്യം വർണിക്കാൻ", b: "യുദ്ധരംഗം അവതരിപ്പിക്കാൻ", c: "ചരിത്രം വിവരിക്കാൻ", d: "സാമൂഹികപ്രശ്നങ്ങൾ അവതരിപ്പിക്കാൻ" },
+        { q: "11. താഴെപ്പറയുന്നവയിൽ ദൃശ്യബിംബത്തിന് ഉദാഹരണമായത് ഏത്?", a: "മധുരമായ സംഗീതം", b: "ചിലങ്കയുടെ ശബ്ദം", c: "മനോഹരമായ നൃത്തച്ചുവടുകൾ", d: "സുഗന്ധമുള്ള പൂക്കൾ" },
+        { q: "12. ‘കാവ്യനർത്തകി’ എന്ന കവിതയുടെ പ്രധാന സവിശേഷത ഏത്?", a: "കഥാഖ്യാനം", b: "വർണനാത്മകതയും ഭാവനാസൗന്ദര്യവും", c: "ശാസ്ത്രീയ വിശദീകരണം", d: "സംഭാഷണരീതി" },
+        { q: "13. കവിതയിലെ നർത്തകിയുടെ ചലനങ്ങൾ വായനക്കാരിൽ ഏത് ഭാവമാണ് ഉണർത്തുന്നത്?", a: "സൗന്ദര്യാനുഭൂതി", b: "ഭീതിയനുഭവം", c: "കോപം", d: "നിരാശ" },
+        { q: "14. ‘കാവ്യനർത്തകി’ എന്ന ശീർഷകത്തിൽ അടങ്ങിയിരിക്കുന്ന ആശയതലം ഏത്?", a: "കവിതയും നൃത്തവും തമ്മിലുള്ള ബന്ധം", b: "കവിതയും കൃഷിയും തമ്മിലുള്ള ബന്ധം", c: "കവിതയും ശാസ്ത്രവും തമ്മിലുള്ള ബന്ധം", d: "കവിതയും രാഷ്ട്രീയവും തമ്മിലുള്ള ബന്ധം" },
+        { q: "15. കവിതയിൽ കവിയുടെ ഭാവന പ്രകടമാകുന്നത് പ്രധാനമായും എങ്ങനെയാണ്?", a: "സംഭവങ്ങൾ യഥാതഥമായി വിവരിക്കുന്നതിലൂടെ", b: "കവിതയ്ക്ക് നർത്തകിയുടെ രൂപവും ഭാവവും നൽകുന്നതിലൂടെ", c: "ചരിത്രസംഭവങ്ങൾ വിവരിക്കുന്നതിലൂടെ", d: "ശാസ്ത്രീയ വസ്തുതകൾ അവതരിപ്പിക്കുന്നതിലൂടെ" }
+      ],
+
+      "Arabic": [
+        { q: "1. اِخْتَرِ الْجُمْلَةَ الصَّحِيحَةَ:", a: "لَنْ نُحَرِّقُ أَبَدًا", b: "لَنْ نُحَرِّقَ أَبَدًا", c: "لَنْ نُحَرِّقْ أَبَدًا", d: "لَنْ نُحَرِّقِ أَبَدًا", cls: "font-arabic" },
+        { q: "2. «هُمْ ...... إِلَى الْمَلْعَبِ»", a: "يَدْخُلُ", b: "يَدْخُلَانِ", c: "يَدْخُلُونَ", d: "تَدْخُلْنَ", cls: "font-arabic" },
+        { q: "3. فِي أَيِّ سَلَّةٍ نُلْقِي «فَضَلَاتِ الطَّعَامِ وَقِشْرَةِ الْخَضْرَاوَاتِ»؟", a: "النُّفَايَاتُ الْوَرَقِيَّةُ", b: "نُفَايَاتُ الْمَوَادِّ الْبِلَاسْتِيكِيَّةِ", c: "النُّفَايَاتُ الْإِلِكْتُرُونِيَّةُ", d: "النُّفَايَاتُ الطَّبِيعِيَّةُ", cls: "font-arabic" },
+        { q: "4. عُمْلَةُ الصِّينِ هِيَ ......", a: "دِينَار", b: "رُوبِيَّة", c: "دُولَار", d: "يُوَان", cls: "font-arabic" },
+        { q: "5. «أَنَا أَقُودُ الْمَرْكَبَاتِ وَالسَّيَّارَاتِ، فَمَنْ أَنَا؟»", a: "مُهَنْدِس", b: "سَائِق", c: "نَجَّار", d: "سَبَّاك", cls: "font-arabic" },
+        { q: "6. «أَنَا أَصْطَادُ السَّمَكَ بِالشَّبَكَةِ مِنَ النَّهْرِ، فَأَنَا ......»", a: "طَبَّاخ", b: "حَطَّاب", c: "سَمَّاك", d: "دَهَّان", cls: "font-arabic" },
+        { q: "7. «ഇലക്ട്രീഷ്യൻ» بِالْعَرَبِيَّةِ:", a: "دَهَّان", b: "كَهْرَبَائِيّ", c: "سَبَّاك", d: "مُحَاسِب", cls: "font-arabic" },
+        { q: "8. «الْجَوَّالَاتُ الْخَرِبَةُ وَالتِّلْفَازُ الْفَاسِدُ» مِنَ:", a: "النُّفَايَاتِ الْوَرَقِيَّةِ", b: "النُّفَايَاتِ الطَّبِيعِيَّةِ", c: "نُفَايَاتِ الْمَوَادِّ الْبِلَاسْتِيكِيَّةِ", d: "النُّفَايَاتِ الْإِلِكْتُرُونِيَّةِ", cls: "font-arabic" },
+        { q: "9. مُفْرَدُ كَلِمَةِ «دَرَاهِم»:", a: "دِرْهَم", b: "دِرْهَام", c: "دِرْهَمَة", d: "دَرَم", cls: "font-arabic" },
+        { q: "10. «هُمْ ...... النُّفَايَاتِ فِي الْأَكْيَاسِ»", a: "يَجْمَعُ", b: "يَجْمَعُونَ", c: "نَجْمَعُ", d: "تَجْمَعْنَ", cls: "font-arabic" },
+        { q: "11. «أَنَا أَلْتَقِطُ الصُّوَرَ الْجَمِيلَةَ بِالْكَامِيرَا، فَمَنْ أَنَا؟»", a: "مُصَمِّم", b: "مُصَوِّر", c: "مُهَنْدِس", d: "كَاتِب", cls: "font-arabic" },
+        { q: "12. عُمْلَةُ الْوِلَايَاتِ الْمُتَّحِدَةِ الْأَمْرِيكِيَّةِ (USA):", a: "رُوبِيَّة", b: "دِينَار", c: "دُولَار", d: "يُوَان", cls: "font-arabic" },
+        { q: "13. مَنْ هُوَ أَدِيبُ الطُّفُولَةِ؟", a: "مُحَمَّد الْفَاضِل سُلَيْمَان", b: "أَحْمَد شَوْقِي", c: "سُلَيْمَان الْعِيسَى", d: "حَافِظ إِبْرَاهِيم", cls: "font-arabic" },
+        { q: "14. «أَرَادَ الْفَلَّاحُ أَنْ ...... لَيْلًا»", a: "يُرَاقِبُ", b: "يُرَاقِبَ", c: "يُرَاقِبِ", d: "يُرَاقِبْ", cls: "font-arabic" },
+        { q: "15. عُمْلَةُ دَوْلَةِ قَطَر هِيَ:", a: "رِيَال", b: "دِينَار", c: "دُولَار", d: "رُوبِيَّة", cls: "font-arabic" }
+      ],
+
+      "Malayalam_BT": [
+        { q: "16. കവി “പൊൻവള്ളമായ് നിലാവ്” എന്ന് പറയുന്നത് എന്തിന്?", a: "സൂര്യോദയത്തിന്", b: "കാറ്റിന്റെ ശബ്ദത്തിന്", c: "മേഘവിമാനത്തിന്", d: "നിലാവിന്റെ പ്രകാശത്തിന്" },
+        { q: "17. “പൂമൊട്ടു തുറന്നു ചിരിക്കുന്നു” എന്നത് ഏത് ശൈലിയിലുള്ള ഭാഷയാണ്?", a: "ഉപമ", b: "സങ്കൽപ്പം", c: "രൂപകം", d: "വിരോധാഭാസം" },
+        { q: "18. കവിതയിൽ കാലത്തെ വിശേഷിപ്പിച്ചിരിക്കുന്നത് എങ്ങനെ?", a: "കരുണാലയമായ്", b: "കഠിനമായ്", c: "ശൂന്യമായ്", d: "വിഷാദമായ്" },
+        { q: "19. ‘കരുണാലയം’ എന്ന പദത്തിന്റെ അർത്ഥം ഏതാണ്?", a: "ദുഃഖസദനം", b: "ദയാനിധി", c: "വിജയാലയം", d: "സന്തോഷാലയം" },
+        { q: "20. “നിലാവിൽ” എന്ന പദം പിരിച്ചെഴുതുക:", a: "നില + ആവ് + ഇൽ", b: "നിലാ + വിൽ", c: "നിലാവ് + ഇൽ", d: "നില + ആവിൽ" },
+        { q: "21." + QP(["ഉണ്ണിക്കതിരോന്റെ പൊൻനുകപ്പാടേറ്റു", "വിണ്ണിൻ വിളിപ്പാടും ചോന്നിതല്ലോ"]) + "ഇവിടെ ‘നുകം’ എന്നു പ്രയോഗിച്ചത് എന്തിനെപ്പറ്റിയാണ്?", a: "കലപ്പ", b: "ആകാശം", c: "ബാലസൂര്യൻ", d: "സൂര്യരശ്മി" },
+        { q: "22. ‘പോയി’ എന്ന പദം വ്യത്യസ്തമായി ഉപയോഗിച്ചിരിക്കുന്ന വാക്യം ഏത്?", a: "ആ കാഴ്ച കണ്ട് അയാൾ കരഞ്ഞുപോയി.", b: "ആ കാഴ്ച കണ്ട് അയാൾ പകച്ചുപോയി.", c: "ആ കാഴ്ച കണ്ട് അയാൾ വീട്ടിലേക്കു തിരിച്ചുപോയി.", d: "ആ കാഴ്ച കണ്ട് അയാൾ അന്ധാളിച്ചുപോയി." },
+        { q: "23. അടിവരയിട്ട പ്രയോഗം കൊണ്ട് അർത്ഥമാക്കുന്നതെന്ത്?" + QP(["പാറിവന്ന സെപ്തംബർ മുകിലുകൾ...", "<u>തീക്കുടുക്കക്കൂട്ടായ്ക്കുമതിയിൽ</u>", "ഫാത്തിമത്തുരുത്തിലൊന്നു പോകണം"]), a: "സന്ധ്യാസമയത്ത് ആകാശത്ത് കറുത്ത കോട്ടകൾ കാണുന്നു.", b: "സന്ധ്യാസമയത്ത് കറുത്ത കോട്ടകളിൽ തീ പിടിക്കുന്നു.", c: "സന്ധ്യാസമയത്തെ ഇടിമുഴക്കങ്ങളുടെ ശബ്ദതീവ്രതയും ഭയാനകതയും.", d: "സന്ധ്യാസമയത്ത് അടുപ്പുകൂട്ടി തീ പിടിപ്പിക്കുന്നത്." },
+        { q: "24. ‘മഹാകവി’ എന്ന വിശേഷണത്തോടെ അറിയപ്പെടുന്ന ‘ഉള്ളൂർ’ എന്ന കവിയുടെ പൂർണനാമം ഏത്?", a: "ഉള്ളൂർ ഗോവിന്ദൻ നായർ", b: "ഉള്ളൂർ എസ്. പരമേശ്വരയ്യർ", c: "ഉള്ളൂർ രാമവർമ", d: "ഉള്ളൂർ കൃഷ്ണൻ നായർ" },
+        { q: "25. ജീവിതാനുഭവങ്ങളിലൂടെ രൂപപ്പെട്ടതും ചുരുങ്ങിയ വാക്കുകളിൽ വലിയ ആശയങ്ങൾ നൽകുന്നതുമായ വാമൊഴികൾ ഏത് പേരിൽ അറിയപ്പെടുന്നു?", a: "ഐതിഹ്യങ്ങൾ", b: "പഴഞ്ചൊല്ലുകൾ", c: "ശൈലികൾ", d: "കടങ്കഥകൾ" },
+        { q: "26. ഗ്രാമശ്രീയുമായി ബന്ധപ്പെടാത്തത് ഏത്?", a: "മുടിയിൽ മുറുക്കാൻ തിരുകിയിട്ടുണ്ട്", b: "മുടി ചെന്നിയിൽ ചെരിച്ചുകെട്ടിയിടുക", c: "ഉടുവസ്ത്രം കയറ്റിക്കുത്തിയിട്ടുണ്ട്", d: "നൊന്തുമരവിച്ച കൈകളാണ്" },
+        { q: "27. താഴെ കൊടുത്തവയിൽ വ്യത്യസ്തമായത് ഏത്?", a: "കുളം", b: "തുമ്മാൻ", c: "പൊക്കിള", d: "മേലാക്കം" },
+        { q: "28. കവയിത്രി ലജ്ജിച്ചു തലതാഴ്ത്തി നിൽക്കാൻ കാരണം താഴെ പറയുന്നവയിൽ ഏതാണ്?", a: "ഗ്രാമസ്ത്രീകൾ കുലമഹിമയുള്ളവരാണ്", b: "ഗ്രാമസ്ത്രീകൾ നീളൻ കുട ചൂടിയാണ് നിൽക്കുന്നത്", c: "മണ്ണിൽ അദ്ധ്വാനിക്കുന്നവരും ചേറ്റുകണ്ടിയിൽ കാവ്യം രചിക്കുന്നവരുമാണ് അവർ", d: "സർവകലാശാലയിൽ പഠിച്ചവരാണ് അവർ" },
+        { q: "29. മികച്ച കർഷകന് സംസ്ഥാനസർക്കാർ കൊടുക്കുന്ന അവാർഡ് ഏത്?", a: "കേരള സാഹിത്യ അക്കാദമി അവാർഡ്", b: "ഓടക്കുഴൽ അവാർഡ്", c: "കർഷകോത്തമ അവാർഡ്", d: "കേന്ദ്ര സാഹിത്യ അക്കാദമി അവാർഡ്" },
+        { q: "30. കൃഷിയുമായി ബന്ധപ്പെടാത്ത പഴഞ്ചൊല്ല് ഏത്?", a: "വിത്താഴം ചെന്നാൽ പത്തായം നിറയും", b: "ഒരുമയുണ്ടെങ്കിൽ ഉലക്കമേലും കിടക്കാം", c: "കനമുള്ള വിത്തിനേ കതിരുള്ളൂ", d: "വിത്തുഗുണം പത്തുഗുണം" }
+      ],
+
+      "Mathematics_Malayalam": [
+        { q: "31. രണ്ട് സമാന്തരവരകളെ മൂന്നാമതൊരു വര ഖണ്ഡിക്കുമ്പോഴുണ്ടാകുന്ന ആന്തര സഹകോണുകളുടെ അംശബന്ധം 2 : 3 ആയാൽ, ചെറിയ കോണിന്റെ അളവ് എത്ര?", a: "36°", b: "72°", c: "108°", d: "54°" },
+        { q: "32. സമാന്തരവരകളുമായി ബന്ധപ്പെട്ട പ്രസ്താവനകൾ പരിശോധിക്കുക:" + ST(["I. ഒരു വരയ്ക്ക് സമാന്തരമായി വരയ്ക്കുന്ന വരകളെല്ലാം പരസ്പരം സമാന്തരമായിരിക്കും.", "II. സമാന്തരവരകൾക്കിടയിലെ തുല്യകോണുകൾ എപ്പോഴും മട്ടകോണുകൾ മാത്രമായിരിക്കും."]), a: "I ശരി, II തെറ്റ്", b: "I തെറ്റ്, II ശരി", c: "രണ്ടും ശരിയാണ്", d: "രണ്ടും തെറ്റാണ്" },
+        { q: "33. ഒരു വരയിലെ ബിന്ദുവിൽ നിന്ന് വരയ്ക്കുന്ന രണ്ട് കിരണങ്ങൾ മൂന്ന് തുല്യകോണുകൾ ഉണ്ടാക്കുന്നുവെങ്കിൽ ഓരോ കോണിന്റെയും അളവ് എത്ര?", a: "45°", b: "60°", c: "90°", d: "30°" },
+        { q: "34. (1 − " + F(1, 2) + ") × (1 − " + F(1, 3) + ") × (1 − " + F(1, 4) + ") × ... × (1 − " + F(1, 10) + ") ന്റെ വില എത്രയാണ്?", a: F(1, 10), b: F(9, 10), c: F(1, 2), d: F(1, 100) },
+        { q: "35. ഒരു സംഖ്യയുടെ " + F(2, 3) + " ഭാഗത്തിന്റെ " + F(3, 4) + " ഭാഗം 24 ആയാൽ സംഖ്യ ഏതാണ്?", a: "36", b: "48", c: "32", d: "64" },
+        { q: "36. ഭിന്നസംഖ്യകളെ സംബന്ധിച്ച പ്രസ്താവനകൾ വിലയിരുത്തുക:" + ST(["പ്രസ്താവന 1: " + F(3, 7) + " ന്റെയും " + F(5, 7) + " ന്റെയും ശരാശരി " + F(4, 7) + " ആണ്.", "പ്രസ്താവന 2: ഒന്നിനേക്കാൾ ചെറിയ ഭിന്നത്തെ അതേ ഭിന്നം കൊണ്ട് ഗുണിച്ചാൽ കിട്ടുന്ന ഫലം മൂലഭിന്നത്തേക്കാൾ ചെറുതായിരിക്കും."]), a: "1 മാത്രം ശരി", b: "2 മാത്രം ശരി", c: "രണ്ടും ശരിയാണ്", d: "രണ്ടും തെറ്റാണ്" },
+        { q: "37. ഒരു ത്രികോണത്തിന്റെ കോണുകളുടെ അംശബന്ധം 2 : 3 : 4 ആയാൽ ഏറ്റവും വലിയ പുറംകോണിന്റെ (exterior angle) അളവ് എത്ര?", a: "140°", b: "120°", c: "100°", d: "80°" },
+        { q: "38. താഴെ പറയുന്ന അളവുകളിൽ ഒരു ത്രികോണത്തിന്റെ വശങ്ങളാകാൻ സാധ്യതയില്ലാത്ത ജോടി ഏത്?", a: "4 cm, 5 cm, 6 cm", b: "3 cm, 4 cm, 8 cm", c: "6 cm, 8 cm, 10 cm", d: "5 cm, 5 cm, 7 cm" },
+        { q: "39. ത്രികോണങ്ങളെക്കുറിച്ചുള്ള പ്രസ്താവനകളിൽ ശരിയായതേത്?" + ST(["I. ഒരു സമപാർശ്വത്രികോണത്തിന്റെ തുല്യവശങ്ങൾക്ക് എതിരെയുള്ള കോണുകൾ തുല്യമാണ്.", "II. ഒരു ത്രികോണത്തിൽ പരമാവധി രണ്ട് വിസ്തൃതകോണുകൾ (obtuse angles) ഉണ്ടാകാം."]), a: "I ശരി, II തെറ്റ്", b: "I തെറ്റ്, II ശരി", c: "രണ്ടും ശരി", d: "രണ്ടും തെറ്റ്" },
+        { q: "40. ഒരു സംഖ്യയെ അതിന്റെ വിപരീതഭിന്നം കൊണ്ട് ഹരിച്ചപ്പോൾ " + F(49, 16) + " കിട്ടി. എങ്കിൽ ആ സംഖ്യ ഏതാണ്?", a: F(7, 4), b: F(4, 7), c: F(16, 49), d: "1" },
+        { q: "41. (2 ÷ " + F(1, 2) + ") + (3 ÷ " + F(1, 3) + ") + (4 ÷ " + F(1, 4) + ") ന്റെ തുക കണക്കാക്കുക:", a: "9", b: "29", c: "20", d: "14" },
+        { q: "42. 0.005 നെ 0.05 കൊണ്ട് ഹരിച്ചാൽ ലഭിക്കുന്ന ഉത്തരമെത്ര?", a: "0.01", b: "0.1", c: "1", d: "0.001" },
+        { q: "43. ദശാംശസംഖ്യകളുമായി ബന്ധപ്പെട്ട പ്രസ്താവനകൾ പരിശോധിക്കുക:" + ST(["പ്രസ്താവന A: 0.2 × 0.2 × 0.2 = 0.008 ആണ്.", "പ്രസ്താവന B: " + F(1, 8) + " ന്റെ തുല്യമായ ദശാംശരൂപം 0.125 ആണ്."]), a: "A മാത്രം ശരി", b: "B മാത്രം ശരി", c: "രണ്ടും ശരിയാണ്", d: "രണ്ടും തെറ്റാണ്" },
+        { q: "44. 15.6 മീറ്റർ നീളമുള്ള ഒരു റിബണിനെ 1.2 മീറ്റർ വീതമുള്ള ചെറിയ കഷണങ്ങളാക്കി മുറിച്ചാൽ എത്ര കഷണങ്ങൾ ലഭിക്കും?", a: "12", b: "13", c: "14", d: "15" },
+        { q: "45. A : B = 2 : 3 ഉം B : C = 4 : 5 ഉം ആയാൽ A : C യുടെ വില എത്ര?", a: "8 : 15", b: "2 : 5", c: "6 : 15", d: "8 : 12" },
+        { q: "46. അംശബന്ധത്തെ സംബന്ധിച്ച ശരിയായ പ്രസ്താവന കണ്ടെത്തുക:" + ST(["I. 50 പൈസയും 2 രൂപയും തമ്മിലുള്ള അംശബന്ധം 1 : 4 ആണ്.", "II. തുല്യ അംശബന്ധങ്ങളിലെ ആദ്യപദത്തിന്റെയും അവസാനപദത്തിന്റെയും ഗുണനഫലം മധ്യപദങ്ങളുടെ ഗുണനഫലത്തിന് തുല്യമാണ്."]), a: "I മാത്രം ശരി", b: "II മാത്രം ശരി", c: "രണ്ടും ശരിയാണ്", d: "രണ്ടും തെറ്റാണ്" },
+        { q: "47. ഒരു പെട്ടിയിലെ ചുവപ്പും നീലയുമായ പന്തുകളുടെ അംശബന്ധം 5 : 3 ആണ്. ചുവന്ന പന്തുകൾ നീലയേക്കാൾ 12 എണ്ണം കൂടുതലായാൽ ആകെ പന്തുകൾ എത്ര?", a: "36", b: "48", c: "60", d: "30" },
+        { q: "48. ഒരമ്മയ്ക്ക് മകളെക്കാൾ 24 വയസ്സ് കൂടുതലാണ്. 4 വർഷം കഴിയുമ്പോൾ അമ്മയുടെ വയസ്സ് മകളുടെ വയസ്സിന്റെ 3 ഇരട്ടിയാകും. മകളുടെ ഇപ്പോഴത്തെ വയസ്സ് എത്ര?", a: "6", b: "8", c: "10", d: "12" },
+        { q: "49. 4x − 7 = 2x + 9 എന്ന സമവാക്യത്തിൽ 'x' ന്റെ വില എത്രയാണ്?", a: "8", b: "1", c: "16", d: "4" },
+        { q: "50. ബീജഗണിത പ്രസ്താവനകൾ പരിശോധിച്ച് ശരിയായ ഓപ്ഷൻ തെരഞ്ഞെടുക്കുക:" + ST(["I. തുടർച്ചയായ മൂന്ന് എണ്ണൽസംഖ്യകളുടെ തുക എപ്പോഴും 3 ന്റെ ഗുണിതമായിരിക്കും.", "II. ഒരു സമചതുരത്തിന്റെ വശം 'a' ആയാൽ ചുറ്റളവ് a + 4 ആണ്."]), a: "I ശരി, II തെറ്റ്", b: "I തെറ്റ്, II ശരി", c: "രണ്ടും ശരിയാണ്", d: "രണ്ടും തെറ്റാണ്" }
+      ],
+
+      "Mathematics_English": [
+        { q: "31. A transversal intersects two parallel lines. If the ratio of interior angles on the same side is 2 : 3, find the smaller angle:", a: "36°", b: "72°", c: "108°", d: "54°" },
+        { q: "32. Consider the statements regarding parallel lines:" + ST(["I. Lines which are parallel to the same line are parallel to each other.", "II. If two lines are parallel, the alternate interior angles must always be right angles."]), a: "I is true, II is false", b: "I is false, II is true", c: "Both are true", d: "Both are false" },
+        { q: "33. Two rays starting from a point on a line divide the straight angle into three equal angles. What is the measure of each angle?", a: "45°", b: "60°", c: "90°", d: "30°" },
+        { q: "34. Evaluate: (1 − " + F(1, 2) + ") × (1 − " + F(1, 3) + ") × (1 − " + F(1, 4) + ") × ... × (1 − " + F(1, 10) + ")", a: F(1, 10), b: F(9, 10), c: F(1, 2), d: F(1, 100) },
+        { q: "35. If " + F(3, 4) + " of " + F(2, 3) + " of a number is 24, then find the original number:", a: "36", b: "48", c: "32", d: "64" },
+        { q: "36. Examine the statements regarding fractions:" + ST(["Statement 1: The average of " + F(3, 7) + " and " + F(5, 7) + " is " + F(4, 7) + ".", "Statement 2: Multiplying a proper fraction by itself yields a value smaller than the fraction."]), a: "1 only is true", b: "2 only is true", c: "Both are true", d: "Both are false" },
+        { q: "37. The angles of a triangle are in the ratio 2 : 3 : 4. What is the measure of its largest exterior angle?", a: "140°", b: "120°", c: "100°", d: "80°" },
+        { q: "38. Which among the following sets of lengths CANNOT form the sides of a triangle?", a: "4 cm, 5 cm, 6 cm", b: "3 cm, 4 cm, 8 cm", c: "6 cm, 8 cm, 10 cm", d: "5 cm, 5 cm, 7 cm" },
+        { q: "39. Which of the statements about triangles is/are true?" + ST(["I. In an isosceles triangle, angles opposite to equal sides are equal.", "II. A triangle can have at most two obtuse interior angles."]), a: "I is true, II is false", b: "I is false, II is true", c: "Both are true", d: "Both are false" },
+        { q: "40. When a positive fraction is divided by its reciprocal, the result obtained is " + F(49, 16) + ". What is the fraction?", a: F(7, 4), b: F(4, 7), c: F(16, 49), d: "1" },
+        { q: "41. Find the value of: (2 ÷ " + F(1, 2) + ") + (3 ÷ " + F(1, 3) + ") + (4 ÷ " + F(1, 4) + ")", a: "9", b: "29", c: "20", d: "14" },
+        { q: "42. Calculate the quotient: 0.005 ÷ 0.05 = ?", a: "0.01", b: "0.1", c: "1", d: "0.001" },
+        { q: "43. Consider the statements related to decimals:" + ST(["Statement A: The product 0.2 × 0.2 × 0.2 equals 0.008.", "Statement B: The decimal equivalent of fraction " + F(1, 8) + " is 0.125."]), a: "Only A is true", b: "Only B is true", c: "Both are true", d: "Both are false" },
+        { q: "44. A ribbon of length 15.6 metres is cut into small equal pieces of length 1.2 metres each. How many pieces are obtained?", a: "12", b: "13", c: "14", d: "15" },
+        { q: "45. If A : B = 2 : 3 and B : C = 4 : 5, then find the compound ratio A : C:", a: "8 : 15", b: "2 : 5", c: "6 : 15", d: "8 : 12" },
+        { q: "46. Identify the correct statement(s) regarding ratios:" + ST(["I. The ratio between 50 paise and ₹2 expressed in simplest form is 1 : 4.", "II. In a proportion, product of extremes equals product of means."]), a: "Only I is true", b: "Only II is true", c: "Both are true", d: "Both are false" },
+        { q: "47. The ratio of red to blue balls in a box is 5 : 3. If there are 12 more red balls than blue balls, what is the total number of balls?", a: "36", b: "48", c: "60", d: "30" },
+        { q: "48. A mother is 24 years older than her daughter. In 4 years, mother's age will be 3 times daughter's age. What is daughter's present age?", a: "6 years", b: "8 years", c: "10 years", d: "12 years" },
+        { q: "49. Find the solution for 'x' in the linear equation: 4x − 7 = 2x + 9", a: "8", b: "1", c: "16", d: "4" },
+        { q: "50. Check the algebraic statements and choose the correct option:" + ST(["I. The sum of any three consecutive natural numbers is always divisible by 3.", "II. If 'a' is the side length of a square, its perimeter is given by a + 4."]), a: "I is true, II is false", b: "I is false, II is true", c: "Both are true", d: "Both are false" }
+      ]
+    };
+
+var DB_KEY = 'SMART_USS_EXAMS_DB_EXAM6';
+var DRAFT_KEY = 'SMART_USS_DRAFT_EXAM6';
+
+var LANGS = [
+  { id:'Arabic',       bank:'Arabic',       ml:'അറബിക്',      native:'العربية', cls:'font-arabic' },
+  { id:'Malayalam AT', bank:'Malayalam_AT', ml:'മലയാളം (AT)', native:'മലയാളം',  cls:'' }
+];
+function langInfo(id){ for(var i=0;i<LANGS.length;i++) if(LANGS[i].id===id) return LANGS[i]; return LANGS[1]; }
+
+var state = { reg:{}, answers:{} };
+
+/* ---------- helpers ---------- */
+function $(id){ return document.getElementById(id); }
+function store(k){ try{ return JSON.parse(localStorage.getItem(k)||'null'); }catch(e){ return null; } }
+function save(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+function drop(k){ try{ localStorage.removeItem(k); }catch(e){} }
+function db(){ return store(DB_KEY) || {}; }
+
+function showModal(title, msg, btns){
+  $('mTitle').textContent = title; $('mMsg').textContent = msg;
+  var box = $('mBtns'); box.innerHTML = '';
+  (btns || [{t:'ശരി (OK)'}]).forEach(function(b){
+    var el = document.createElement('button');
+    el.className = 'btn ' + (b.cls || 'btn-main'); el.textContent = b.t;
+    el.onclick = function(){ $('modal').classList.remove('show'); if(b.fn) b.fn(); };
+    box.appendChild(el);
+  });
+  $('modal').classList.add('show');
+  box.lastChild.focus();
+}
+
+function showScreen(n){
+  ['screenReg','screenExam','screenResult'].forEach(function(id,i){ $(id).classList.toggle('show', i===n-1); });
+  var spans = document.querySelectorAll('#stepBar span');
+  for(var i=0;i<spans.length;i++){
+    var s = +spans[i].getAttribute('data-s');
+    spans[i].className = s===n ? 'on' : (s<n ? 'done' : '');
+  }
+  window.scrollTo(0,0);
+}
+
+/* ---------- registration ---------- */
+function buildRollMatrix(){
+  var h = '';
+  for(var c=0;c<6;c++){
+    h += '<div class="roll-col"><div class="roll-box" id="rbx_'+c+'"></div>';
+    for(var d=0; d<=9; d++) h += '<div class="rb" id="rb_'+c+'_'+d+'">'+d+'</div>';
+    h += '</div>';
+  }
+  $('rollMatrix').innerHTML = h;
+}
+function updateRollBubbles(v){
+  for(var c=0;c<6;c++){
+    $('rbx_'+c).textContent = v[c] || '';
+    for(var d=0;d<=9;d++) $('rb_'+c+'_'+d).classList.toggle('filled', v[c]===String(d));
+  }
+}
+function buildLangGrid(){
+  $('langGrid').innerHTML = LANGS.map(function(l){
+    return '<button type="button" class="chip" data-val="'+l.id+'"><span class="dot"></span>'+
+      '<span class="native '+l.cls+'">'+l.native+'</span><span class="ml">'+l.ml+'</span></button>';
+  }).join('');
+}
+function wireChoices(){
+  var groups = document.querySelectorAll('[data-group]');
+  for(var i=0;i<groups.length;i++){
+    groups[i].addEventListener('click', function(e){
+      var chip = e.target.closest('.chip'); if(!chip) return;
+      var g = this.getAttribute('data-group');
+      var all = this.querySelectorAll('.chip');
+      for(var j=0;j<all.length;j++) all[j].classList.remove('on');
+      chip.classList.add('on');
+      state.reg[g] = chip.getAttribute('data-val');
+    });
+  }
+}
+
+function startExam(){
+  var name = $('studentName').value.trim();
+  var roll = $('studentRoll').value.trim();
+  var r = state.reg;
+  if(!name || !/^[A-Z\s]+$/.test(name)) return showModal('ശ്രദ്ധിക്കുക','കുട്ടിയുടെ പേര് ഇംഗ്ലീഷ് ക്യാപിറ്റൽ അക്ഷരങ്ങളിൽ നൽകുക.');
+  if(!/^\d{6}$/.test(roll)) return showModal('ശ്രദ്ധിക്കുക','6 അക്ക റോൾ നമ്പർ പൂർണ്ണമായി നൽകുക.');
+  if(!r.gender) return showModal('ശ്രദ്ധിക്കുക','Gender തിരഞ്ഞെടുക്കുക.');
+  if(!r.med) return showModal('ശ്രദ്ധിക്കുക','മീഡിയം (മലയാളം / ഇംഗ്ലീഷ്) തിരഞ്ഞെടുക്കുക.');
+  if(!r.lang) return showModal('ശ്രദ്ധിക്കുക','ഒന്നാം ഭാഷ (അറബിക് / മലയാളം) തിരഞ്ഞെടുക്കുക.');
+  if(db()[roll]) return showModal('ഈ റോൾ നമ്പർ ഉപയോഗിച്ചു കഴിഞ്ഞു',
+    'റോൾ നമ്പർ '+roll+' ഉപയോഗിച്ച് ഇതിനകം പരീക്ഷ എഴുതിയിട്ടുണ്ട്. ഒരു റോൾ നമ്പറിൽ ഒരു തവണ മാത്രമേ എഴുതാൻ പറ്റൂ. റിസൾട്ട് കാണാൻ "റിസൾട്ട് നോക്കുക" അമർത്തുക.');
+  r.name = name; r.roll = roll;
+  state.answers = {};
+  save(DRAFT_KEY, state);
+  renderPaper();
+  showScreen(2);
+}
+
+/* ---------- exam paper ---------- */
+function sections(){ return sectionsFor(state.reg.lang, state.reg.med); }
+function sectionsFor(lang, med){
+  var L = langInfo(lang);
+  var mathsBank = med === 'English' ? 'Mathematics_English' : 'Mathematics_Malayalam';
+  return [
+    { id:'A', title:'ഒന്നാം ഭാഷ: '+L.ml, sub:'Part A (1st Language - AT)', from:1, to:15,
+      qs:EXAM_QUESTION_BANK[L.bank], key:MASTER_EVALUATION_KEY[L.id] },
+    { id:'B', title:'മലയാളം (അടിസ്ഥാന പാഠാവലി)', sub:'Part B (Malayalam BT)', from:16, to:30,
+      qs:EXAM_QUESTION_BANK['Malayalam_BT'], key:MASTER_EVALUATION_KEY['Malayalam BT'] },
+    { id:'C', title:(med==='English'?'Mathematics':'ഗണിതം (Mathematics)'), sub:'Part C', from:31, to:50,
+      qs:EXAM_QUESTION_BANK[mathsBank], key:MASTER_EVALUATION_KEY['Maths'] }
+  ];
+}
+
+function renderPaper(){
+  var r = state.reg, L = langInfo(r.lang);
+  $('whoBox').innerHTML = r.name + '<small>Roll: ' + r.roll + ', ' + (r.med==='English'?'English Medium':'മലയാളം മീഡിയം') + ', ' + L.ml + '</small>';
+  var secs = sections(), h = '';
+  $('jumpRow').innerHTML = secs.map(function(s){
+    return '<button onclick="document.getElementById(\'sec'+s.id+'\').scrollIntoView({behavior:\'smooth\'})">'+s.sub.split(' (')[0]+': '+s.title.split(' (')[0]+'</button>';
+  }).join('');
+
+  secs.forEach(function(s){
+    var n = s.to - s.from + 1;
+    h += '<section class="subj '+s.id+'" id="sec'+s.id+'">';
+    h += '<div class="subj-head"><div><h2>'+s.title+'</h2><p>'+s.sub+', ചോദ്യം '+s.from+' മുതൽ '+s.to+' വരെ, '+n+' മാർക്ക്</p></div>'+
+         '<div class="tally" id="tally'+s.id+'">0 / '+n+'</div></div>';
+    s.qs.forEach(function(q, i){
+      var num = s.from + i;
+      var cls = q.cls || '';
+      var rtl = (cls==='font-arabic') ? ' dir="rtl"' : '';
+      var text = q.q.replace(/^\s*\d+\s*\.\s*/, '');
+      h += passageFor(q, num);
+      h += '<div class="q" id="q'+num+'"><div class="q-top"><div class="qn">'+num+'</div>'+
+           '<div class="q-text '+cls+'"'+rtl+'>'+text+'</div></div><div class="opts" role="radiogroup" aria-label="ചോദ്യം '+num+'">';
+      ['A','B','C','D'].forEach(function(o){
+        h += '<button type="button" class="opt" role="radio" aria-checked="false" data-q="'+num+'" data-o="'+o+'"'+rtl+'>'+
+             '<span class="bub">'+o+'</span><span class="ot '+cls+'">'+q[o.toLowerCase()]+'</span></button>';
+      });
+      h += '</div></div>';
+    });
+    h += '</section>';
+  });
+
+  h += '<div class="status"><h3>ഉത്തരങ്ങളുടെ സ്ഥിതി</h3>'+
+       '<p>പച്ച നിറമുള്ളവക്ക് ഉത്തരം നൽകി. വെള്ള നിറമുള്ള നമ്പറിൽ തൊട്ടാൽ ആ ചോദ്യത്തിലേക്ക് പോകാം.</p>'+
+       '<div class="dots" id="dots">';
+  for(var k=1;k<=50;k++) h += '<button type="button" data-go="'+k+'">'+k+'</button>';
+  h += '</div><div class="legend"><span><i class="g"></i>ഉത്തരം നൽകി</span><span><i></i>ബാക്കിയുള്ളവ</span></div></div>';
+  h += '<div class="btn-row"><button class="btn btn-go" onclick="confirmSubmit()">പരീക്ഷ സബ്മിറ്റ് ചെയ്യുക (Submit)</button></div>';
+
+  $('paper').innerHTML = h;
+  for(var qn in state.answers) markPick(+qn, state.answers[qn]);
+  refreshProgress();
+}
+
+function markPick(num, opt){
+  var btns = document.querySelectorAll('.opt[data-q="'+num+'"]');
+  for(var i=0;i<btns.length;i++){
+    var on = btns[i].getAttribute('data-o') === opt;
+    btns[i].classList.toggle('picked', on);
+    btns[i].setAttribute('aria-checked', on ? 'true' : 'false');
+  }
+  var card = $('q'+num); if(card) card.classList.add('answered');
+}
+
+function refreshProgress(){
+  var total = 0, per = {A:0,B:0,C:0};
+  for(var qn in state.answers){ total++; qn=+qn; per[qn<=15?'A':(qn<=30?'B':'C')]++; }
+  $('ansCount').textContent = total;
+  var bars = document.querySelectorAll('#progBar i');
+  bars[0].style.width = (per.A/50*100)+'%'; bars[1].style.width = (per.B/50*100)+'%'; bars[2].style.width = (per.C/50*100)+'%';
+  if($('tallyA')){ $('tallyA').textContent = per.A+' / 15'; $('tallyB').textContent = per.B+' / 15'; $('tallyC').textContent = per.C+' / 20'; }
+  var dots = document.querySelectorAll('#dots button');
+  for(var i=0;i<dots.length;i++) dots[i].classList.toggle('done', !!state.answers[i+1]);
+}
+
+document.addEventListener('click', function(e){
+  var opt = e.target.closest('.opt');
+  if(opt && !opt.classList.contains('r-opt')){
+    var num = +opt.getAttribute('data-q'), o = opt.getAttribute('data-o');
+    state.answers[num] = o;
+    markPick(num, o); refreshProgress(); save(DRAFT_KEY, state);
+    return;
+  }
+  var fb = e.target.closest('#rvFilter button');
+  if(fb){
+    var f = fb.getAttribute('data-f'), bs = document.querySelectorAll('#rvFilter button');
+    for(var i=0;i<bs.length;i++) bs[i].classList.toggle('on', bs[i]===fb);
+    var cards = document.querySelectorAll('.rv');
+    for(var j=0;j<cards.length;j++) cards[j].style.display = (f==='all' || cards[j].getAttribute('data-st')===f) ? '' : 'none';
+    var secsEl = document.querySelectorAll('.rv-sec');
+    for(var m=0;m<secsEl.length;m++) secsEl[m].style.display = secsEl[m].querySelector('.rv:not([style*="none"])') ? '' : 'none';
+    return;
+  }
+  var go = e.target.closest('[data-go]');
+  if(go){ var t = $('q'+go.getAttribute('data-go')); if(t) t.scrollIntoView({behavior:'smooth', block:'center'}); }
+});
+
+function confirmSubmit(){
+  var left = [];
+  for(var i=1;i<=50;i++) if(!state.answers[i]) left.push(i);
+  var msg = left.length
+    ? left.length+' ചോദ്യങ്ങൾക്ക് ഉത്തരം നൽകിയിട്ടില്ല (ചോദ്യം: '+left.slice(0,12).join(', ')+(left.length>12?' ...':'')+'). എന്നാലും സബ്മിറ്റ് ചെയ്യണോ? സബ്മിറ്റ് ചെയ്താൽ പിന്നെ മാറ്റാൻ പറ്റില്ല.'
+    : 'എല്ലാ ചോദ്യങ്ങൾക്കും ഉത്തരം നൽകി. സബ്മിറ്റ് ചെയ്താൽ പിന്നെ ഉത്തരങ്ങൾ മാറ്റാൻ പറ്റില്ല.';
+  showModal('സബ്മിറ്റ് ചെയ്യട്ടെ?', msg, [
+    { t:'തിരികെ പോകുക', cls:'btn-line', fn: left.length ? function(){ $('q'+left[0]).scrollIntoView({behavior:'smooth',block:'center'}); } : null },
+    { t:'സബ്മിറ്റ് ചെയ്യുക', cls:'btn-go', fn: submitExam }
+  ]);
+}
+
+function submitExam(){
+  var r = state.reg, secs = sections(), scores = {};
+  secs.forEach(function(s){
+    var sc = 0;
+    for(var n=s.from;n<=s.to;n++) if(state.answers[n] && state.answers[n] === s.key[n]) sc++;
+    scores[s.id] = sc;
+  });
+  var all = db();
+  all[r.roll] = {
+    name:r.name, roll:r.roll, gender:r.gender, lang:r.lang, med:r.med,
+    partA:scores.A, partB:scores.B, partC:scores.C, total:scores.A+scores.B+scores.C,
+    answers:state.answers, time:new Date().toISOString()
+  };
+  save(DB_KEY, all);
+  drop(DRAFT_KEY);
+  $('doneBanner').innerHTML = '<div class="done-banner no-print"><b>പരീക്ഷ വിജയകരമായി സബ്മിറ്റ് ചെയ്തു!</b>താഴെ റോൾ നമ്പർ നൽകി റിസൾട്ട് കാണാം.</div>';
+  $('lookupRoll').value = r.roll;
+  $('resultOut').innerHTML = ''; $('lookupErr').innerHTML = '';
+  showScreen(3);
+  $('lookupRoll').focus();
+}
+
+/* ---------- result ---------- */
+function goResult(){
+  if($('screenExam').classList.contains('show')){
+    return showModal('പരീക്ഷ നടക്കുകയാണ്','നിങ്ങളുടെ ഉത്തരങ്ങൾ സേവ് ആയിട്ടുണ്ട്. റിസൾട്ട് പേജിലേക്ക് പോകണോ? പിന്നീട് തിരിച്ചു വന്ന് തുടരാം.', [
+      {t:'പരീക്ഷ തുടരുക', cls:'btn-line'}, {t:'റിസൾട്ട് പേജ്', fn:function(){ $('doneBanner').innerHTML=''; showScreen(3); }}
+    ]);
+  }
+  $('doneBanner').innerHTML = ''; showScreen(3); $('lookupRoll').focus();
+}
+
+function checkResult(){
+  var roll = $('lookupRoll').value.trim();
+  $('lookupErr').innerHTML = ''; $('resultOut').innerHTML = '';
+  if(!/^\d{6}$/.test(roll)){ $('lookupErr').innerHTML = '<div class="err">6 അക്ക റോൾ നമ്പർ നൽകുക.</div>'; return; }
+  var rec = db()[roll];
+  if(!rec){ $('lookupErr').innerHTML = '<div class="err">റോൾ നമ്പർ '+roll+' ൽ പരീക്ഷാ വിവരങ്ങൾ ഒന്നും കണ്ടില്ല. നമ്പർ ഒന്നുകൂടി പരിശോധിക്കുക.</div>'; return; }
+  renderResult(rec);
+}
+
+function renderResult(rec){
+  var L = langInfo(rec.lang);
+  var rows = [
+    { nm:'ഒന്നാം ഭാഷ: '+L.ml, sub:'Part A', sc:rec.partA, max:15, col:'var(--a)' },
+    { nm:'മലയാളം (അടിസ്ഥാന പാഠാവലി)', sub:'Part B', sc:rec.partB, max:15, col:'var(--b)' },
+    { nm:'ഗണിതം (Mathematics)', sub:'Part C', sc:rec.partC, max:20, col:'var(--c)' }
+  ];
+  var pct = Math.round(rec.total/50*100);
+  var g = pct>=70 ? ['var(--ok-soft)','var(--ok)','മികച്ച പ്രകടനം! അഭിനന്ദനങ്ങൾ.']
+        : pct>=50 ? ['var(--b-soft)','var(--navy)','നല്ല പ്രകടനം. തെറ്റിയ ചോദ്യങ്ങൾ ഒന്നുകൂടി പഠിക്കൂ.']
+        : ['var(--c-soft)','var(--c)','കൂടുതൽ പരിശീലനം വേണം. താഴെയുള്ള ഉത്തരസൂചിക നോക്കി പഠിക്കൂ.'];
+
+  var h = '<div class="card" id="resultCard">'+
+    '<div class="res-head"><div><h3>SMART VIDHYA USS MODEL EXAM 6, റിസൾട്ട്</h3>'+
+    '<div class="meta"><b>'+rec.name+'</b><br>റോൾ നമ്പർ: <b>'+rec.roll+'</b><br>'+
+    (rec.med==='English'?'English Medium':'മലയാളം മീഡിയം')+', '+L.ml+'</div></div>'+
+    '<div class="total"><div class="big">'+rec.total+'</div><div class="of">/ 50 മാർക്ക്</div></div></div>';
+
+  rows.forEach(function(r){
+    h += '<div class="subj-row"><div class="nm">'+r.nm+'<small>'+r.sub+'</small></div>'+
+         '<div class="sc">'+r.sc+' <span style="color:var(--muted);font-size:.85rem">/ '+r.max+'</span></div>'+
+         '<div class="meter"><i style="width:'+(r.sc/r.max*100)+'%;background:'+r.col+'"></i></div></div>';
+  });
+  h += '<div class="subj-row" style="border:0"><div class="nm">ആകെ മാർക്ക് (Total)</div><div class="sc">'+rec.total+' / 50</div></div>';
+  h += '<div class="grade" style="background:'+g[0]+';color:'+g[1]+'">'+pct+'%, '+g[2]+'</div>';
+
+  var ans = rec.answers || {}, secs = sectionsFor(rec.lang, rec.med);
+  var cOk = 0, cBad = 0, cNa = 0;
+  var rv = '';
+  secs.forEach(function(s){
+    var sc = 0, n = s.to - s.from + 1;
+    for(var k=s.from;k<=s.to;k++) if(ans[k] && ans[k]===s.key[k]) sc++;
+    rv += '<div class="subj '+s.id+' rv-sec"><div class="subj-head"><div><h2>'+s.title+'</h2><p>'+s.sub+', ചോദ്യം '+s.from+' മുതൽ '+s.to+' വരെ</p></div>'+
+          '<div class="tally">'+sc+' / '+n+'</div></div>';
+    s.qs.forEach(function(q, i){
+      var num = s.from + i, key = s.key[num], u = ans[num] || '';
+      var st = !u ? 'na' : (u===key ? 'ok' : 'bad');
+      if(st==='ok') cOk++; else if(st==='bad') cBad++; else cNa++;
+      var cls = q.cls || '';
+      var rtl = (cls==='font-arabic') ? ' dir="rtl"' : '';
+      var badge = st==='ok' ? '<span class="rv-badge ok">✔ ശരി, 1 മാർക്ക്</span>'
+                : st==='bad' ? '<span class="rv-badge bad">✘ തെറ്റ്, 0 മാർക്ക്</span>'
+                : '<span class="rv-badge na">ഉത്തരം നൽകിയില്ല</span>';
+      if(passageFor(q, num)) rv += passageFor(q, num).replace('class="passage"','class="passage rv" data-st="p"');
+      rv += '<div class="q rv rv-'+st+'" data-st="'+st+'"><div class="q-top"><div class="qn">'+num+'</div>'+
+            '<div class="q-text '+cls+'"'+rtl+'>'+q.q.replace(/^\s*\d+\s*\.\s*/, '')+'</div></div><div class="opts">';
+      ['A','B','C','D'].forEach(function(o){
+        var oc = o===key ? ' r-key' : (o===u ? ' r-wrong' : '');
+        var tag = o===key && o===u ? '<span class="r-tag">നിങ്ങളുടെ ഉത്തരം, ശരി</span>'
+                : o===key ? '<span class="r-tag">ശരിയുത്തരം</span>'
+                : o===u ? '<span class="r-tag">നിങ്ങളുടെ ഉത്തരം</span>' : '';
+        rv += '<div class="opt r-opt'+oc+(o===u?' r-mine':'')+'"'+rtl+'><span class="bub">'+o+'</span>'+
+              '<span class="ot '+cls+'">'+q[o.toLowerCase()]+tag+'</span></div>';
+      });
+      rv += '</div><div class="rv-foot">'+badge+(st==='bad'?'<span class="rv-key">ശരിയുത്തരം: <b>'+key+'</b></span>':'')+'</div></div>';
+    });
+    rv += '</div>';
+  });
+  h += '<div class="rv-wrap"><h3 class="rv-title">ചോദ്യങ്ങളും ഉത്തരങ്ങളും</h3>'+
+       '<p class="lead">പച്ച നിറത്തിലുള്ളത് ശരിയുത്തരം. ചുവപ്പ് നിറത്തിലുള്ളത് നിങ്ങൾ തിരഞ്ഞെടുത്ത തെറ്റായ ഉത്തരം.</p>'+
+       '<div class="rv-filter no-print" id="rvFilter">'+
+       '<button class="on" data-f="all">എല്ലാം (50)</button>'+
+       '<button data-f="ok">ശരി ('+cOk+')</button>'+
+       '<button data-f="bad">തെറ്റ് ('+cBad+')</button>'+
+       '<button data-f="na">നൽകാത്തവ ('+cNa+')</button></div>'+ rv + '</div>';
+  h += '<div class="btn-row no-print"><button class="btn btn-main" onclick="downloadResult(this)">റിസൾട്ട് PDF ആയി സേവ് ചെയ്യുക</button></div></div>';
+  $('resultOut').innerHTML = h;
+  $('resultCard').scrollIntoView({behavior:'smooth'});
+}
+
+function downloadResult(btn){
+  var el = $('resultCard'), all = document.querySelector('#rvFilter [data-f=all]');
+  if(all) all.click();
+  if(typeof html2pdf === 'undefined'){ window.print(); return; }
+  var old = btn.textContent; btn.disabled = true; btn.textContent = 'PDF തയ്യാറാകുന്നു...';
+  html2pdf().set({
+    margin:[0.3,0.3,0.4,0.3], filename:'USS_Exam6_Result_'+($('lookupRoll').value||'')+'.pdf',
+    image:{type:'jpeg',quality:0.98},
+    html2canvas:{scale:2,useCORS:true,ignoreElements:function(x){ return x.classList && x.classList.contains('no-print'); }},
+    jsPDF:{unit:'in',format:'a4',orientation:'portrait'}, pagebreak:{mode:['css','legacy']}
+  }).from(el).save().then(done).catch(function(){ window.print(); done(); });
+  function done(){ btn.disabled = false; btn.textContent = old; }
+}
+
+function newExam(){
+  state = { reg:{}, answers:{} };
+  $('studentName').value = ''; $('studentRoll').value = ''; updateRollBubbles('');
+  var chips = document.querySelectorAll('#screenReg .chip.on');
+  for(var i=0;i<chips.length;i++) chips[i].classList.remove('on');
+  $('resultOut').innerHTML = ''; $('lookupRoll').value = ''; $('doneBanner').innerHTML = '';
+  showScreen(1); sizeSig(); clearSig();
+}
+
+/* ---------- signature ---------- */
+var cv, cx, drawing = false;
+function sizeSig(){ if(!cv) return; var r = cv.getBoundingClientRect(); if(r.width){ cv.width = r.width; cv.height = r.height; } }
+function clearSig(){ if(cx){ cx.clearRect(0,0,cv.width,cv.height); cx.beginPath(); } }
+function sigPos(e){ var r = cv.getBoundingClientRect(); return [e.clientX-r.left, e.clientY-r.top]; }
+function initSig(){
+  cv = $('sigCanvas'); cx = cv.getContext('2d'); sizeSig();
+  cv.addEventListener('pointerdown', function(e){ drawing = true; var p = sigPos(e); cx.beginPath(); cx.moveTo(p[0],p[1]); cv.setPointerCapture(e.pointerId); });
+  cv.addEventListener('pointermove', function(e){ if(!drawing) return; var p = sigPos(e); cx.lineWidth = 2; cx.lineCap = 'round'; cx.strokeStyle = '#111'; cx.lineTo(p[0],p[1]); cx.stroke(); });
+  ['pointerup','pointerleave','pointercancel'].forEach(function(ev){ cv.addEventListener(ev, function(){ drawing = false; }); });
+}
+
+/* ---------- boot ---------- */
+window.addEventListener('load', function(){
+  buildRollMatrix(); buildLangGrid(); wireChoices(); showScreen(1); initSig();
+  var d = store(DRAFT_KEY);
+  if(d && d.reg && d.reg.roll && !db()[d.reg.roll]){
+    showScreen(1);
+    var cnt = Object.keys(d.answers||{}).length;
+    showModal('പൂർത്തിയാക്കാത്ത പരീക്ഷ',
+      d.reg.name+' (Roll '+d.reg.roll+') എന്ന കുട്ടിയുടെ പരീക്ഷ പകുതിയിൽ നിൽക്കുന്നു ('+cnt+' / 50 ഉത്തരം നൽകി). തുടരണോ?', [
+      { t:'പുതിയത് തുടങ്ങുക', cls:'btn-line', fn:function(){ drop(DRAFT_KEY); } },
+      { t:'തുടരുക', fn:function(){ state = d; renderPaper(); showScreen(2); } }
+    ]);
+  } else {
+    showScreen(1);
+  }
+});
+window.addEventListener('resize', sizeSig);
+</script>
+</body>
+</html>
